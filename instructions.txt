@@ -1,0 +1,87 @@
+Step 1: Create a bucket
+
+Step 2: Create the following folders inside the bucket:
+	- customers_data
+	- inventory_data
+	- orders_data
+	- products_data
+	- shipping_data
+	- trigger_file
+
+Step 3: Within each folder, create the following subfolders:
+	- archive
+	- source
+	- Exclude the `trigger_file` folder from these subfolders.
+
+Note: Steps 2 and 3 can be done manually from the AWS UI; however, this is cumbersome. Recommended: write a Python script using the `boto3` library to automate the folder creation.
+
+Step 4: Create an external location in your Databricks account: add the S3 bucket created in Step 1, click Create token, and copy the generated token string. Make sure you are logged into your AWS account.
+
+Step 5: In your AWS account, paste the Databricks Personal Access Token. Check "I acknowledge that AWS CloudFormation might create IAM resources with custom names." Then click Create Stack.
+
+Step 6: Once the CloudFormation stack is created in your AWS account, check the Catalog Explorer to see if the external location has been added.
+
+Step 7: Create a new catalog: nsk_ecomm_project_1
+
+Step 8: Create a volume within the catalog: ecomm_project_1_vol
+	- Choose External location: select the bucket that was added previously.
+	- Click Create volume.
+	- Once the volume is created, you will be able to see all the subfolders created in the bucket.
+
+Step 9: Create notebooks:
+	- One for customers_data
+	- One for inventory_data
+	- One for orders_data
+	- One for products_data
+	- One for shipping_data
+	- One for data validation
+	- One for data enrichment
+	- One for the final merge operation
+
+Step 10: Code walkthrough:
+	- Update the following variables: `source_dir`, `archive_dir`, `stage_table`, `error_table`.
+	- Define the schema for the data load using `StructField` and `StructType`.
+	- Read the data into a DataFrame and validate it.
+	- Perform data enrichment if required.
+	- Write valid data into the staging table and invalid data into the error table.
+	- Archive the processed data into the `archive` folder. Initially, the files stay in the `source` folder.
+	- Display the processing log summary.
+	- This applies to the following notebooks: Customer, inventory, orders, products, and shipping.
+
+Step 11: Data validation and cross-reference checks:
+	- Read the data from the following tables into DataFrames: `orders_stage`, `customer_stage`, `products_stage`, `inventory_stage`, `shipping_stage`.
+	- Orders vs. Customers — cross-reference validation: find orphaned orders/customers, unreasonable orders, etc.
+	- Orders vs. Products — cross-reference validation: find orphaned orders/products and validate order amount vs. price.
+	- Orders vs. Shipping — cross-reference validation: orders without shipping and vice versa; unreasonable shipping cost.
+	- Products vs. Inventory — cross-reference validation: products without inventory and vice versa.
+	- Business rules validation — see the code for details.
+	- Compile validation results into High, Medium, and Low severity and an overall status: Pass or Fail.
+	- Validation summary.
+
+Step 12: Data enrichment and business intelligence:
+	- Read all the data from the tables into DataFrames.
+	- Rename all conflicting columns to avoid ambiguity.
+	- Join orders with customers, products, inventory, and shipping.
+	Data enrichments:
+	- Add business metrics.
+	- Add customer lifetime value estimation.
+	- Add seasonal indicators.
+	- Add day-of-week and time-of-day indicators.
+	- Create customer analytics dataset — see the code for more details.
+	- Create product analytics dataset — see the code for more details.
+	- Write enriched datasets to tables — see the code for more details.
+
+Step 13: Final merge operation and data consolidation:
+	The MERGE command is useful to perform conditional INSERT/UPDATE/DELETE into a target table compared with a source table.
+	- SCD Type 0 — Ignore changes (e.g., DOB, place of birth, registration date).
+	- SCD Type 1 — Overwrite approach (e.g., address).
+	- SCD Type 2 — History-tracking approach — the gold standard of data warehousing. Tracks history and typically uses `start_date`, `end_date`, and `is_current` flag.
+
+Step 14: Jobs and pipelines:
+	- Create a new job → Notebook.
+	- Orders, Customers, Products, Inventory, and Shipping tasks should be independent of each other.
+	- Validation (depends on all five tasks), Enrichment (depends on Validation), and Merge operation (depends on Enrichment).
+	- Set the file-arrival trigger to the `trigger_file` folder.
+	- Upload the five files into the `source` folder of the S3 bucket.
+	- Upload the dummy trigger file.
+	- Wait a couple of seconds for the pipeline to start.
