@@ -2,7 +2,7 @@
 
 ## 🛠️ **Project 1**: E-commerce Event-Driven Data Pipeline (Industrial Project) <br/>
 
-###🚀 **Tech Stack** <br/>
+### 🚀 **Tech Stack** <br/>
 **Compute & Processing**: Databricks, PySpark, Delta Lake <br/>
 **Orchestration & Storage**: Databricks Workflows, Databricks Volumes <br/>
 **Version Control & CI/CD**: GitHub <br/>
