@@ -28,3 +28,8 @@
 ### Data Enrichment & Analytics Layer <br/>
   1) Derived advanced downstream metrics including Customer Lifetime Value (CLV), behavioral customer segmentation models, and dynamic product performance tracking.
   2) Aggregated processed operational data into high-performance Gold-layer summary tables optimized for business KPI dashboards.
+
+## Workflow Diagram <br/> 
+
+<img width="877" height="541" alt="image" src="https://github.com/user-attachments/assets/6e351444-9f35-4c9c-b2ec-6c5dbc538857" />
+
