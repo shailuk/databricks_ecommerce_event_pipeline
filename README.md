@@ -1,4 +1,4 @@
-# databricks_ecommerce_event_pipeline
+# Databricks - Ecommerce event driven data pipeline
 
 ## 🛠️ **Project 1**: E-commerce Event-Driven Data Pipeline (Industrial Project) <br/>
 
